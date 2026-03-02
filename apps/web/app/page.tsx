@@ -47,8 +47,11 @@ export default async function Home({ searchParams }: HomePageProps) {
     limit: String(pageSize),
   };
 
+  const emptyResult: PaginatedResult<JobListingPreview> = { items: [], page, limit: pageSize, total: 0, hasMore: false };
+
   const hasSession = await hasAuthSession();
   let hasPrivateAccess = hasSession;
+  let apiUnavailable = false;
   let jobsResult: PaginatedResult<JobListingFull | JobListingPreview>;
   if (hasSession) {
     try {
@@ -56,13 +59,24 @@ export default async function Home({ searchParams }: HomePageProps) {
     } catch (error) {
       if (error instanceof ApiError && error.status === 401) {
         hasPrivateAccess = false;
-        jobsResult = await getPublicJobs(filters);
+        try {
+          jobsResult = await getPublicJobs(filters);
+        } catch {
+          apiUnavailable = true;
+          jobsResult = emptyResult;
+        }
       } else {
-        throw error;
+        apiUnavailable = true;
+        jobsResult = emptyResult;
       }
     }
   } else {
-    jobsResult = await getPublicJobs(filters);
+    try {
+      jobsResult = await getPublicJobs(filters);
+    } catch {
+      apiUnavailable = true;
+      jobsResult = emptyResult;
+    }
   }
   const jobs = jobsResult.items;
   const totalPages = Math.max(Math.ceil(jobsResult.total / jobsResult.limit), 1);
@@ -82,6 +96,12 @@ export default async function Home({ searchParams }: HomePageProps) {
 
   return (
     <div className="stack">
+      {apiUnavailable && (
+        <div className="panel flex items-center gap-3 border-amber-400/60 bg-amber-50 text-amber-800 dark:bg-amber-950/40 dark:text-amber-300">
+          <AlertCircleIcon size={18} className="shrink-0" />
+          <p className="text-sm">Could not reach the API. Please try again in a moment.</p>
+        </div>
+      )}
       {/* ── Header + filters ── */}
       <section className="panel stack">
         <div className="page-header">
