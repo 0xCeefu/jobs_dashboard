@@ -1,0 +1,11 @@
+[build]
+  base = "."
+  command = "pnpm install --frozen-lockfile && pnpm turbo build --filter=./apps/web --no-daemon"
+  publish = "apps/web/.next"
+
+[build.environment]
+  NODE_VERSION = "20"
+  PNPM_VERSION = "9.0.0"
+
+[[plugins]]
+  package = "@netlify/plugin-nextjs"
