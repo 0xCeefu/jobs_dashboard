@@ -4,7 +4,7 @@ services:
     runtime: node
     region: oregon
     plan: free
-    buildCommand: pnpm install --frozen-lockfile && pnpm turbo build --filter=api
+    buildCommand: pnpm install --frozen-lockfile && pnpm turbo build --filter=./apps/api --no-daemon
     startCommand: node apps/api/dist/main.js
     healthCheckPath: /
     envVars:
