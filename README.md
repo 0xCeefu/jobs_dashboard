@@ -4,7 +4,7 @@ A full-stack job discovery and management platform built as a TypeScript monorep
 
 **Live:** [https://jobs.0xceefu.dev](https://jobs.0xceefu.dev)
 
-![Jobs Dashboard screenshot](https://jobs.0xceefu.dev/og-screenshot.png)
+![Jobs Dashboard screenshot](./og-screenshot.png)
 
 ---
 
